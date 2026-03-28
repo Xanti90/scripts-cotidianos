@@ -15,12 +15,12 @@ Modos:
 Autor: Santiago Jiménez
 """
 
-import os
 import re
 import sys
 import subprocess
 from pathlib import Path
 from datetime import datetime
+from typing import Optional, Tuple
 
 # Librerías opcionales (cargadas solo si están disponibles)
 try:
@@ -37,7 +37,6 @@ except ImportError:
     FITZ_OK = False
 
 try:
-    import mutagen
     from mutagen.easyid3 import EasyID3
     from mutagen.mp4 import MP4
     from mutagen.flac import FLAC
@@ -181,7 +180,8 @@ def nombre_imagen(ruta: Path) -> str:
     if PIL_OK:
         try:
             img = Image.open(ruta)
-            exif_data = img._getexif() or {}
+            raw_exif = img.getexif()
+            exif_data = dict(raw_exif) if raw_exif else {}
             exif = {TAGS.get(k, k): v for k, v in exif_data.items()}
 
             # Fecha real de la foto desde EXIF
@@ -340,7 +340,7 @@ def nombre_generico(ruta: Path) -> str:
 # MOTOR PRINCIPAL
 # ─────────────────────────────────────────────────────────────
 
-def generar_nombre(ruta: Path) -> str | None:
+def generar_nombre(ruta: Path) -> Optional[str]:
     """Genera el nuevo nombre para un archivo. Devuelve None si no hay que renombrarlo."""
     nombre = ruta.name
     ext = ruta.suffix.lower()
@@ -386,7 +386,7 @@ def generar_nombre(ruta: Path) -> str | None:
     return f"{base}{ext}"
 
 
-def renombrar_archivo(ruta: Path, simular: bool = False) -> tuple[bool, str]:
+def renombrar_archivo(ruta: Path, simular: bool = False) -> Tuple[bool, str]:
     """Renombra un archivo. Devuelve (éxito, mensaje)."""
     try:
         nuevo_nombre = generar_nombre(ruta)
