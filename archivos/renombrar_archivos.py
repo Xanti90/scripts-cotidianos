@@ -1,3 +1,4 @@
+
 """
 RENOMBRADOR INTELIGENTE DE ARCHIVOS
 =====================================
@@ -20,35 +21,46 @@ import sys
 import subprocess
 from pathlib import Path
 from datetime import datetime
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 
 # Librerías opcionales (cargadas solo si están disponibles)
+Image: Any = None
+TAGS: Any  = None
+PIL_OK = False
 try:
     from PIL import Image
     from PIL.ExifTags import TAGS
     PIL_OK = True
 except ImportError:
-    PIL_OK = False
+    pass
 
+fitz: Any = None
+FITZ_OK = False
 try:
     import fitz  # PyMuPDF
     FITZ_OK = True
 except ImportError:
-    FITZ_OK = False
+    pass
 
+EasyID3: Any = None
+MP4: Any = None
+FLAC: Any = None
+MUTAGEN_OK = False
 try:
     from mutagen.easyid3 import EasyID3
     from mutagen.mp4 import MP4
     from mutagen.flac import FLAC
     MUTAGEN_OK = True
 except ImportError:
-    MUTAGEN_OK = False
+    pass
 
+Document: Any = None
+DOCX_OK = False
 try:
     from docx import Document
     DOCX_OK = True
 except ImportError:
-    DOCX_OK = False
+    pass
 
 
 # ─────────────────────────────────────────────────────────────
@@ -228,7 +240,7 @@ def nombre_pdf(ruta: Path) -> str:
 
             # 2. Si no hay título, leer primera página
             if not titulo and len(doc) > 0:
-                texto = doc[0].get_text("text")
+                texto = str(doc[0].get_text("text"))
                 lineas = [l.strip() for l in texto.split("\n") if len(l.strip()) > 4]
                 if lineas:
                     titulo = limpiar_texto(lineas[0], max_palabras=5)
@@ -292,16 +304,16 @@ def nombre_audio(ruta: Path) -> str:
             ext = ruta.suffix.lower()
             if ext == ".mp3":
                 tags = EasyID3(str(ruta))
-                artista = limpiar_texto(tags.get("artist", [""])[0], max_palabras=2)
-                titulo_cancion = limpiar_texto(tags.get("title", [""])[0], max_palabras=3)
+                artista = limpiar_texto(str((tags.get("artist") or [""])[0]), max_palabras=2)
+                titulo_cancion = limpiar_texto(str((tags.get("title") or [""])[0]), max_palabras=3)
             elif ext in {".m4a", ".mp4"}:
                 tags = MP4(str(ruta))
-                artista = limpiar_texto(str(tags.get("\xa9ART", [""])[0]), max_palabras=2)
-                titulo_cancion = limpiar_texto(str(tags.get("\xa9nam", [""])[0]), max_palabras=3)
+                artista = limpiar_texto(str((tags.get("\xa9ART") or [""])[0]), max_palabras=2)
+                titulo_cancion = limpiar_texto(str((tags.get("\xa9nam") or [""])[0]), max_palabras=3)
             elif ext == ".flac":
                 tags = FLAC(str(ruta))
-                artista = limpiar_texto(str(tags.get("artist", [""])[0]), max_palabras=2)
-                titulo_cancion = limpiar_texto(str(tags.get("title", [""])[0]), max_palabras=3)
+                artista = limpiar_texto(str((tags.get("artist") or [""])[0]), max_palabras=2)
+                titulo_cancion = limpiar_texto(str((tags.get("title") or [""])[0]), max_palabras=3)
         except Exception:
             pass
 
