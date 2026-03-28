@@ -28,8 +28,8 @@ Image: Any = None
 TAGS: Any  = None
 PIL_OK = False
 try:
-    from PIL import Image
-    from PIL.ExifTags import TAGS
+    from PIL import Image  # type: ignore[import-untyped]
+    from PIL.ExifTags import TAGS  # type: ignore[import-untyped]
     PIL_OK = True
 except ImportError:
     pass
@@ -37,7 +37,7 @@ except ImportError:
 fitz: Any = None
 FITZ_OK = False
 try:
-    import fitz  # PyMuPDF
+    import fitz  # type: ignore[import-untyped]  # PyMuPDF
     FITZ_OK = True
 except ImportError:
     pass
@@ -47,9 +47,9 @@ MP4: Any = None
 FLAC: Any = None
 MUTAGEN_OK = False
 try:
-    from mutagen.easyid3 import EasyID3
-    from mutagen.mp4 import MP4
-    from mutagen.flac import FLAC
+    from mutagen.easyid3 import EasyID3  # type: ignore[import-untyped]
+    from mutagen.mp4 import MP4  # type: ignore[import-untyped]
+    from mutagen.flac import FLAC  # type: ignore[import-untyped]
     MUTAGEN_OK = True
 except ImportError:
     pass
@@ -57,7 +57,7 @@ except ImportError:
 Document: Any = None
 DOCX_OK = False
 try:
-    from docx import Document
+    from docx import Document  # type: ignore[import-untyped]
     DOCX_OK = True
 except ImportError:
     pass

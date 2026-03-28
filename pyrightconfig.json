@@ -1,0 +1,14 @@
+{
+  "pythonVersion": "3.9",
+  "pythonPlatform": "Darwin",
+  "venvPath": "/Users/santiagojimeneztellez/Library/Python/3.9",
+  "extraPaths": [
+    "/Users/santiagojimeneztellez/Library/Python/3.9/lib/python/site-packages"
+  ],
+  "typeCheckingMode": "basic",
+  "reportMissingModuleSource": "none",
+  "reportMissingImports": "none",
+  "reportUnknownMemberType": "none",
+  "reportUnknownVariableType": "none",
+  "reportUnknownArgumentType": "none"
+}
